@@ -58,7 +58,7 @@ int line_num = 1;
 "."                       { printf("%d . \"%s\"\n",line_num,yytext);}
 ":"                       { printf("%d : \"%s\"\n",line_num,yytext);}
 
-[0-9][0-9]+                    { printf("%d INTEGER_LIT \"%s\"\n",line_num,yytext);}
+[0-9][0-9]+               { printf("%d INTEGER_LIT \"%s\"\n",line_num,yytext);}
 
 
 [a-zA-Z0-9]+              { printf("%d IDENT \"%s\"\n",line_num,yytext); }

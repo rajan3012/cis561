@@ -1,0 +1,114 @@
+%{
+#include <cstdio>
+#include <stdio.h>
+#include <iostream>
+#include "quackParser.tab.h"
+using namespace std;
+
+// stuff from flex that bison needs to know about:
+extern "C" int yylex();
+extern "C" FILE *yyin;
+extern int line_num;
+extern char* yytext;
+
+ 
+void yyerror(const char *s);
+%}
+
+// Bison fundamentally works by asking flex to get the next token, which it
+// returns as an object of type "yystype".  But tokens could be of any
+// arbitrary data type!  So we deal with that in Bison by defining a C union
+// holding each of the types of tokens that Flex could return, and have Bison
+// use that union instead of "int" for the definition of "yystype":
+%union {
+	int ival;
+	char *sval;
+//	struct node_struct* nodeval;
+}
+
+// define the constant-string tokens:
+%token <sval> STRING_LIT INT_LIT 
+%token ELLIPSIS
+%token DEF
+%token CLASS
+%token EXTENDS
+%token IF
+%token ELIF 
+%token ELSE
+%token WHILE
+%token RETURN
+%token GETS
+%token AND
+%token OR
+%token NOT
+%token SCOLON
+%token COMMA
+%token DOT
+%token COLON
+%token IDENT
+
+
+/*%type <ival> NUM
+%type <sval> WORD
+*/
+
+%start program
+%%
+
+program:
+	classes
+	;
+
+classes:
+	//empty
+	| classes class
+	;
+
+class:
+	class_signature
+	;
+
+class_signature:
+	CLASS IDENT '(' formal_args ')'
+	| CLASS IDENT '(' formal_args ')' EXTENDS IDENT
+	;
+		
+formal_args:
+	//empty
+	| IDENT COLON IDENT args 
+	;
+
+args:
+	//empty
+	| args COMMA IDENT COLON IDENT
+	;
+
+%%
+
+
+int main(int argc, char* argv[]) {
+
+        // open a file handle to a particular file:
+        FILE *myfile = fopen(argv[1], "r");
+        // make sure it's valid:
+        if (!myfile) {
+                cout << "Can't open quack example!" << endl;
+                return -1;
+        }
+        // set lex to read from it instead of defaulting to STDIN:
+        yyin = myfile;
+
+        // lex through the input:
+        //yylex();
+	// parse through the input until there is no more:
+	
+	do {
+		yyparse();
+	} while (!feof(yyin));
+	printf("\nFinished parse with no errors\n");
+}
+
+void yyerror(const char *s) {
+	fprintf(stderr,"%d: Parse error on token \"%s\"  \n",line_num,yytext);
+	exit(-1);
+}

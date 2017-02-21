@@ -1,0 +1,24 @@
+To do:
+
+Check for:
+1. Uninitialized variables
+		- check if value is NULL
+
+2. If, elsif, while - conditions must have a boolean type
+		- can take values: 0 false. Other nums true
+		- function call - but function must return a boolean value or number
+		- comparisons
+ 
+3. Calling undefined methods
+		- for constructor call: check if class exists in the class_names list
+
+4. Illegal redefinition of name in scope : creating variable x when it exists in scope
+		- possible soln: create symbol table for each block to manage scope  
+
+5. Method returns wrong type
+		- check function return type with actual type after return call ( could be managed by scope symbol table)
+
+6. Incompatible overriding
+		- Create list of arguments ( var and type) and compare against overriding method
+		- check: return type, argument count, argument types
+ 
